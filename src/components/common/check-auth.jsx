@@ -1,37 +1,23 @@
 import { Navigate, useLocation } from "react-router-dom";
 
-function CheckAuth({isAuthenticated, user, children}) {
-    const location = useLocation() ;
+function CheckAuth({ isAuthenticated, children }) {
+    const location = useLocation();
 
-    if(location.pathname === "/") {
-        if(!isAuthenticated) {
-            return <Navigate to="/auth/login" />
-        }else {
-            return <Navigate to = "/" />
-        }
+    // Redirect unauthenticated users to login, unless they are on an auth page
+    if (!isAuthenticated && !location.pathname.startsWith("/auth")) {
+        return <Navigate to="/auth/login" state={{ from: location }} replace />;
     }
 
-    if(
-        !isAuthenticated &&
-        !(
-            location.pathname.includes("/login") ||
-            location.pathname.includes("/signin")
-        )
+    // Redirect authenticated users away from auth pages
+    if (
+        isAuthenticated &&
+        (location.pathname.includes("/login") || location.pathname.includes("/signin"))
     ) {
-        return <Navigate to = "/auth/login" />
+        return <Navigate to="/" replace />;
     }
 
-    if(
-        isAuthenticated && 
-        (
-            location.pathname.includes("/login") ||
-            location.pathname.includes("/signin")
-        )
-    ) {
-        return <Navigate to="/" />
-    }
-
-    return <>{children}</>
+    // Render the children if no redirects are needed
+    return <>{children}</>;
 }
 
 export default CheckAuth;

@@ -1,9 +1,11 @@
-function Home () {
+function Home() {
     return ( 
         <>
-            hello
+            <div className="bg-red text-5xl">
+                Home
+            </div>
         </>
      );
 }
 
-export default Home ;
+export default Home;
